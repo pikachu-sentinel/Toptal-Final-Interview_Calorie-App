@@ -2,35 +2,40 @@
 const FoodEntry = require('./FoodEntry');
 const jwt = require('jsonwebtoken');
 const User = require('./User');
+const bcrypt = require('bcrypt');
 
 const SECRET_KEY = 'your_secret_key'; // This should be in an environment variable!
 
 const resolvers = {
     Query: {
-        getFoodEntries: async () => {
-            return await FoodEntry.find({});
+        getFoodEntries: async (_, args, { user }) => {
+            if (!user) throw new Error('Authentication required');
+
+            return user.role === 'admin'
+                ? await FoodEntry.find({})
+                : await FoodEntry.find({ userId: user.id });
         },
     },
     Mutation: {
-        addFoodEntry: async (_, { description, calories }) => {
-            const newFoodEntry = new FoodEntry({ description, calories });
+        addFoodEntry: async (_, { description, calories }, { user }) => {
+            if (!user) throw new Error('Authentication required');
+
+            const newFoodEntry = new FoodEntry({ description, calories, userId: user.id });
             return await newFoodEntry.save();
         },
-        updateFoodEntry: async (_, { id, description, calories, eatenAt }, context) => {
-            if (!context.user) {
-                throw new Error('Not Authenticated');
+        updateFoodEntry: async (_, { id, description, calories, eatenAt }, { uesr }) => {
+            if (!user) throw new Error('Authentication required');
+
+            const foodEntry = await FoodEntry.findById(id);
+
+            if (!foodEntry || (foodEntry.userId !== user.id && user.role !== 'admin')) {
+                throw new Error('Unauthorized to update this food entry');
             }
 
-            const update = {};
-            if (description !== undefined) {
-                update.description = description;
-            }
-            if (calories !== undefined) {
-                update.calories = calories;
-            }
-            if (eatenAt !== undefined) {
-                update.eatenAt = new Date(eatenAt);
-            }
+            const update = { description, calories, eatenAt };
+            // Clean up any undefined values that were not passed
+            Object.keys(update).forEach(key => update[key] === undefined && delete update[key]);
+            update.userId = user.id;
 
             // Find the food entry by ID and update it with the new values.
             // `new: true` option returns the updated object.
@@ -42,7 +47,15 @@ const resolvers = {
             return updatedFoodEntry;
         },
 
-        removeFoodEntry: async (_, { id }) => {
+        removeFoodEntry: async (_, { id }, { user }) => {
+            if (!user) throw new Error('Authentication required.');
+
+            const foodEntry = await FoodEntry.findById(id);
+
+            // Check if entry exists and if the user is the owner or an admin.
+            if (!foodEntry || (foodEntry.userId !== user.id && user.role !== 'admin')) {
+                throw new Error('Not authorized to delete this entry.');
+            }
             return await FoodEntry.findByIdAndRemove(id);
         },
 

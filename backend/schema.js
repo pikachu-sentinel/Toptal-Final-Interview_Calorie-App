@@ -2,11 +2,18 @@
 const { gql } = require('apollo-server-express');
 
 const typeDefs = gql`
+  type User {
+    id: ID!
+    username: String!
+    role: String!
+  }
+
   type FoodEntry {
     id: ID!
     description: String!
     calories: Int!
     eatenAt: String!
+    user: User!
   }
 
   type Token {
