@@ -16,12 +16,18 @@ const typeDefs = gql`
     user: User!
   }
 
+  type FoodSuggestion {
+    name: String!
+    imageUrl: String!
+  }
+
   type Token {
     value: String!
   }
 
   type Query {
     getFoodEntries: [FoodEntry]
+    autocompleteFoodItem(searchTerm: String!): [FoodSuggestion]
   }
 
   type Mutation {

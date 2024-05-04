@@ -3,8 +3,15 @@ const FoodEntry = require('./FoodEntry');
 const jwt = require('jsonwebtoken');
 const User = require('./User');
 const bcrypt = require('bcrypt');
+const nutritionix = require("nutritionix-api");
+
 
 const SECRET_KEY = 'your_secret_key'; // This should be in an environment variable!
+const YOUR_APP_ID = '7a2d26a3'; // Your APP ID
+const YOUR_API_KEY = '4d5d83185a24e7d5e52a59706888a499'; // Your KEY
+
+nutritionix.init(YOUR_APP_ID, YOUR_API_KEY);
+
 
 const resolvers = {
     Query: {
@@ -15,6 +22,22 @@ const resolvers = {
                 ? await FoodEntry.find({})
                 : await FoodEntry.find({ userId: user.id });
         },
+        autocompleteFoodItem: async (_, { searchTerm }) => {
+            if (!searchTerm) throw new Error('Search term is required');
+
+            try {
+                // nutritionix.natural.search(searchTerm).then(result => {
+                //     console.log(result);
+                // });
+                nutritionix.autocomplete.search(searchTerm).then(result => {
+                    // console.log(result.foods[0].photo);
+                    console.log(result);
+                });
+            }
+            catch (error) {
+                throw new Error('Error fetching autocomplete suggestions');
+            }
+        }
     },
     Mutation: {
         addFoodEntry: async (_, { description, calories }, { user }) => {
