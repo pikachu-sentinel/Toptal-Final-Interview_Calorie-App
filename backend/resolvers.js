@@ -56,7 +56,8 @@ const resolvers = {
             if (!foodEntry || (foodEntry.userId !== user.id && user.role !== 'admin')) {
                 throw new Error('Not authorized to delete this entry.');
             }
-            return await FoodEntry.findByIdAndRemove(id);
+            await FoodEntry.deleteOne({ _id: id });
+            return foodEntry;
         },
 
         signUp: async (_, { username, password }) => {
