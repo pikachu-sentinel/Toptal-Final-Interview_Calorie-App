@@ -1,19 +1,26 @@
+// index.tsx
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
+import { createRoot } from 'react-dom/client';
+import { ApolloProvider } from '@apollo/client';
 import App from './App';
+import client from './graphql/client'; // Import the configured Apollo Client instance
+import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+// Assuring TypeScript that the element exists by checking if it's null.
+const rootElement = document.getElementById('root');
+if (rootElement === null) throw new Error('Root container missing in index.html');
+
+// Now we create the root with the non-null HTML element.
+const root = createRoot(rootElement);
+
 root.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// reportWebVitals is an optional performance monitoring tool
 reportWebVitals();

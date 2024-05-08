@@ -21,12 +21,22 @@ const typeDefs = gql`
     imageUrl: String!
   }
 
+  type FoodDetail {
+    food_name: String!
+    serving_qty: Float!
+    serving_unit: String!
+    nf_calories: Float!
+    imageUrl: String!
+  }
+
+
   type Token {
     value: String!
   }
 
   type Query {
     getFoodEntries: [FoodEntry]
+    getFoodDetail(foodName: String!): FoodDetail
     autocompleteFoodItem(searchTerm: String!): [FoodSuggestion]
   }
 
