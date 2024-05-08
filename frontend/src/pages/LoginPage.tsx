@@ -1,54 +1,80 @@
 // src/components/SignIn.tsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // React Router's Link
 import { useMutation } from '@apollo/client';
-import { SIGN_IN } from '../graphql/mutations/signIn'; // Adjust this import to the location of your queries.
+import { Button, TextField, CircularProgress, Box, Typography, Link as MuiLink } from '@mui/material';
+
+import { SIGN_IN } from '../graphql/mutations/signIn'; // Correct path to your SIGN_IN mutation
 import { useAuth } from '../context/AuthContext';
-import { SignInResponse, SignInVariables } from '../types/graphql'; // Adjust this import to the location of your types.
+import { SignInResponse, SignInVariables } from '../types/graphql'; // Correct path to your types
 
 const SignIn: React.FC = () => {
-    const [signIn, { data, loading, error }] = useMutation<SignInResponse, SignInVariables>(SIGN_IN);
-
-    const navigate = useNavigate();
-    const { login, isAuthenticated } = useAuth();
-
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-
-    const handleSignIn = async () => {
-        try {
-            const response = await signIn({ variables: { username, password } });
-            if (response.data) {
-                // Handle the response, e.g., store the token, navigate to another page, etc.
-                login();
-                localStorage.setItem('authToken', response.data.signIn.value);
-                navigate('/home');
-            }
-        } catch (e) {
-            // Handle errors, such as displaying a message to the user
-            console.error('Sign-In Error:', e);
+    const navigate = useNavigate();
+    const { login } = useAuth();
+    
+    const [signIn, { loading, error }] = useMutation<SignInResponse, SignInVariables>(SIGN_IN, {
+        variables: { username, password },
+        onCompleted: (data) => {
+            login();
+            localStorage.setItem('authToken', data.signIn.value);
+            navigate('/home');
+        },
+        onError: (error) => {
+            console.error('Sign-In Error:', error);
         }
+    });
+    
+    const handleSignIn = async () => {
+        await signIn();
     };
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>An error occurred: {error.message}</p>;
-
     return (
-        <div>
-            <input
-                type="text"
+        <Box sx={{ width: 300, margin: 'auto', display: 'flex', flexDirection: 'column', mt: 10 }}>
+            <Typography variant="h4" component="h1" sx={{ textAlign: 'center', mb: 2 }}>
+                Sign In
+            </Typography>
+            <TextField
+                fullWidth
+                label="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username"
+                margin="normal"
             />
-            <input
+            <TextField
+                fullWidth
+                label="Password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
+                margin="normal"
             />
-            <button onClick={handleSignIn}>Sign In</button>
-        </div>
+            <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                onClick={handleSignIn}
+                sx={{ mt: 2 }}
+            >
+                {loading ? <CircularProgress size={24} /> : 'Sign In'}
+            </Button>
+            {error && (
+                <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+                    Error: {error.message}
+                </Typography>
+            )}
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2" textAlign="center">
+                Don't have an account?
+                {' '}
+                <MuiLink component={Link} to="/register" underline="hover">
+                  Register here
+                </MuiLink>
+              </Typography>
+            </Box>
+        </Box>
     );
 };
 

@@ -1,12 +1,14 @@
+// src/pages/RegisterPage.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
 import { SIGN_UP } from '../graphql/mutations/signUp';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import { TextField, Button, Paper, Box, Typography, Link as MuiLink } from '@mui/material';
 
 const RegisterPage: React.FC = () => {
     const navigate = useNavigate();
-    const [signUp, { data, loading, error }] = useMutation(SIGN_UP);
+    const [signUp, { loading, error }] = useMutation(SIGN_UP);
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -14,53 +16,84 @@ const RegisterPage: React.FC = () => {
 
     const handleRegister = async (event: React.FormEvent) => {
         event.preventDefault();
-        // Process the registration using an auth service or context (not displayed here)
         try {
             const response = await signUp({ variables: { username, email, password } });
             if (response.data) {
-                // Handle the response from the registration mutation,
-                // e.g., store the token if one is returned, log the user in,
-                // or save user data to state management/context.
-
-                // Navigate the user to the login page or directly to the dashboard
-                // if they're logged in automatically after registering.
                 navigate('/login');
             }
         } catch (e) {
-            // Handle errors, such as displaying a message to the user.
             console.error('Registration Error:', e);
         }
     };
 
     return (
-        <div>
-            <h2>Register</h2>
-            <form onSubmit={handleRegister}>
-                <input
-                    type="text"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    placeholder="Username"
-                    required
-                />
-                <input
-                    type="email"
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="Email"
-                    required
-                />
-                <input
-                    type="password"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    placeholder="Password"
-                    required
-                />
-                <button type="submit">Register</button>
-            </form>
-            <Link to="/login">Already have an account? Login</Link>
-        </div>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                p: 3
+            }}
+        >
+            <Paper elevation={3} sx={{ p: 3, width: '100%', maxWidth: 360 }}>
+                <Typography variant="h4" component="h1" sx={{ textAlign: 'center', mb: 2 }}>
+                    Register
+                </Typography>
+                <Box
+                    component="form"
+                    onSubmit={handleRegister}
+                    sx={{ display: 'flex', flexDirection: 'column' }}
+                    noValidate
+                >
+                    <TextField
+                        label="Username"
+                        variant="outlined"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        margin="normal"
+                        required
+                    />
+                    <TextField
+                        label="Email"
+                        type="email"
+                        variant="outlined"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        margin="normal"
+                        required
+                    />
+                    <TextField
+                        label="Password"
+                        type="password"
+                        variant="outlined"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        margin="normal"
+                        required
+                    />
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        disabled={loading}
+                        sx={{ mt: 2 }}
+                    >
+                        Register
+                    </Button>
+                    {error && (
+                        <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+                            Error: {error.message}
+                        </Typography>
+                    )}
+                </Box>
+                <Box sx={{ mt: 2, textAlign: 'center' }}>
+                    <MuiLink component={RouterLink} to="/login" variant="body2">
+                        Already have an account? Login
+                    </MuiLink>
+                </Box>
+            </Paper>
+        </Box>
     );
 };
 
