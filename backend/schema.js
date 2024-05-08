@@ -26,16 +26,7 @@ const typeDefs = gql`
     serving_qty: Float!
     serving_unit: String!
     nf_calories: Float!
-    nf_total_fat: Float!
-    nf_saturated_fat: Float!
-    nf_cholesterol: Float!
-    nf_sodium: Float!
-    nf_total_carbohydrate: Float!
-    nf_dietary_fiber: Float!
-    nf_sugars: Float!
-    nf_protein: Float!
-    nf_potassium: Float!
-    nf_p: Float!
+    imageUrl: String!
   }
 
 

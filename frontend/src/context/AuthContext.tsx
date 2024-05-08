@@ -1,5 +1,5 @@
 // src/context/AuthContext.tsx
-import React, { createContext, useContext, useState, PropsWithChildren } from 'react';
+import React, { createContext, useContext, useState, PropsWithChildren, useEffect } from 'react';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -15,7 +15,10 @@ export const AuthProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const login = () => setIsAuthenticated(true); // You would add real login logic here
-  const logout = () => setIsAuthenticated(false); // And logout logic here
+  const logout = () => {
+    window.localStorage.removeItem('authToken');
+    setIsAuthenticated(false);
+  }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, login, logout }}>

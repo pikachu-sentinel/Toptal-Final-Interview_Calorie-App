@@ -17,10 +17,9 @@ const resolvers = {
     Query: {
         getFoodEntries: async (_, args, { user }) => {
             if (!user) throw new Error('Authentication required');
-
             return user.role === 'admin'
                 ? await FoodEntry.find({})
-                : await FoodEntry.find({ userId: user.id });
+                : await FoodEntry.find({ userId: user.userId });
         },
         getFoodDetail: async (_, { foodName }) => {
             try {
@@ -33,6 +32,7 @@ const resolvers = {
                     serving_qty: result.foods[0].serving_qty,
                     serving_unit: result.foods[0].serving_unit,
                     nf_calories: result.foods[0].nf_calories,
+                    imageUrl: result.foods[0].photo?.thumb
                     // Add other relevant fields
                 };
 
@@ -61,9 +61,10 @@ const resolvers = {
     Mutation: {
         addFoodEntry: async (_, { description, calories }, { user }) => {
             if (!user) throw new Error('Authentication required');
-
-            const newFoodEntry = new FoodEntry({ description, calories, userId: user.id });
-            return await newFoodEntry.save();
+            
+            const newFoodEntry = new FoodEntry({ description, calories, userId: user.userId });
+            await newFoodEntry.save();
+            return newFoodEntry;
         },
         updateFoodEntry: async (_, { id, description, calories, eatenAt }, { uesr }) => {
             if (!user) throw new Error('Authentication required');
@@ -118,6 +119,7 @@ const resolvers = {
             if (!valid) {
                 throw new Error('Incorrect password');
             }
+
 
             const token = jwt.sign({ userId: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
             return { value: token };

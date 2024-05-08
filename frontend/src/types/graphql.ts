@@ -9,7 +9,6 @@ export interface FoodEntry {
     description: string;
     calories: number;
     eatenAt: string;
-    user: User;
 }
 
 export interface FoodSuggestion {
@@ -22,16 +21,7 @@ export interface FoodDetail {
     serving_qty: number;
     serving_unit: string;
     nf_calories: number;
-    nf_total_fat: number;
-    nf_saturated_fat: number;
-    nf_cholesterol: number;
-    nf_sodium: number;
-    nf_total_carbohydrate: number;
-    nf_dietary_fiber: number;
-    nf_sugars: number;
-    nf_protein: number;
-    nf_potassium: number;
-    nf_p: number;
+    imageUrl: string;
 }
 
 export interface Token {

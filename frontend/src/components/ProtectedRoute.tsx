@@ -8,6 +8,7 @@ import { useAuth } from '../context/AuthContext';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { isAuthenticated } = useAuth();
+
     const location = useLocation();
 
     const token = localStorage.getItem('authToken');
@@ -31,6 +32,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
             return true;
         }
     };
+
+    if (token && !isAuthenticated) {
+        return <>{children}</>
+    }
 
     if (!isAuthenticated || isTokenExpired()) {
         // Redirect to the login page if not authenticated or if the token has expired

@@ -7,11 +7,6 @@ export const ADD_FOOD_ENTRY = gql`
       description
       calories
       eatenAt
-      user {
-        id
-        username
-        role
-      }
     }
   }
 `;
