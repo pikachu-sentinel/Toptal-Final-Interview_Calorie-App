@@ -17,9 +17,10 @@ const resolvers = {
     Query: {
         getFoodEntries: async (_, args, { user }) => {
             if (!user) throw new Error('Authentication required');
+            console.log(user);
             return user.role === 'admin'
-                ? await FoodEntry.find({})
-                : await FoodEntry.find({ userId: user.userId });
+                ? await FoodEntry.find({}).populate('user')
+                : await FoodEntry.find({ user: user.user }).populate('user');
         },
         getFoodDetail: async (_, { foodName }) => {
             try {
@@ -62,23 +63,23 @@ const resolvers = {
         addFoodEntry: async (_, { description, calories }, { user }) => {
             if (!user) throw new Error('Authentication required');
             
-            const newFoodEntry = new FoodEntry({ description, calories, userId: user.userId });
+            const newFoodEntry = new FoodEntry({ description, calories, user: user.user });
             await newFoodEntry.save();
             return newFoodEntry;
         },
-        updateFoodEntry: async (_, { id, description, calories, eatenAt }, { uesr }) => {
+        updateFoodEntry: async (_, { id, description, calories, eatenAt }, { user }) => {
             if (!user) throw new Error('Authentication required');
 
             const foodEntry = await FoodEntry.findById(id);
 
-            if (!foodEntry || (foodEntry.userId !== user.id && user.role !== 'admin')) {
+            if (!foodEntry || (foodEntry.user !== user.user && user.role !== 'admin')) {
                 throw new Error('Unauthorized to update this food entry');
             }
 
             const update = { description, calories, eatenAt };
             // Clean up any undefined values that were not passed
             Object.keys(update).forEach(key => update[key] === undefined && delete update[key]);
-            update.userId = user.id;
+            update.user = user.user;
 
             // Find the food entry by ID and update it with the new values.
             // `new: true` option returns the updated object.
@@ -96,7 +97,7 @@ const resolvers = {
             const foodEntry = await FoodEntry.findById(id);
 
             // Check if entry exists and if the user is the owner or an admin.
-            if (!foodEntry || (foodEntry.userId !== user.id && user.role !== 'admin')) {
+            if (!foodEntry || (foodEntry.user !== user.id && user.role !== 'admin')) {
                 throw new Error('Not authorized to delete this entry.');
             }
             await FoodEntry.deleteOne({ _id: id });
@@ -106,7 +107,7 @@ const resolvers = {
         signUp: async (_, { username, password }) => {
             const user = new User({ username, password });
             await user.save();
-            const token = jwt.sign({ userId: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+            const token = jwt.sign({ user: user.id, username: user.username, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
             return { value: token };
         },
         signIn: async (_, { username, password }) => {
@@ -121,7 +122,7 @@ const resolvers = {
             }
 
 
-            const token = jwt.sign({ userId: user.id, username: user.username }, SECRET_KEY, { expiresIn: '1h' });
+            const token = jwt.sign({ user: user.id, username: user.username, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
             return { value: token };
         },
     },

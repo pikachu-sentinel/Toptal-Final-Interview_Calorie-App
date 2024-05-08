@@ -9,6 +9,7 @@ export interface FoodEntry {
     description: string;
     calories: number;
     eatenAt: string;
+    user: User;
 }
 
 export interface FoodSuggestion {

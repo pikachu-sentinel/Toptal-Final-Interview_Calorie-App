@@ -1,4 +1,3 @@
-// src/components/Navbar.tsx
 import React from 'react';
 import { Box, AppBar, Toolbar, Typography, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -6,11 +5,11 @@ import { useAuth } from '../context/AuthContext';
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout, role } = useAuth(); // include role in the usage of the AuthContext
 
   const handleLogout = () => {
     logout();
-    navigate('/'); // Or wherever you want to redirect after logout
+    navigate('/'); // You may want to navigate to a login page or public page after logout
   };
 
   return (
@@ -30,9 +29,16 @@ const Navbar: React.FC = () => {
               </Button>
             </>
           ) : (
-            <Button color="inherit" onClick={handleLogout}>
-              Logout
-            </Button>
+            <>
+              {role === 'admin' && (
+                <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1 }}>
+                  Admin Dashboard
+                </Typography>
+              )}
+              <Button color="inherit" onClick={handleLogout}>
+                Logout
+              </Button>
+            </>
           )}
         </Toolbar>
       </AppBar>

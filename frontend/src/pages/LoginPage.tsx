@@ -17,8 +17,8 @@ const SignIn: React.FC = () => {
     const [signIn, { loading, error }] = useMutation<SignInResponse, SignInVariables>(SIGN_IN, {
         variables: { username, password },
         onCompleted: (data) => {
-            login();
             localStorage.setItem('authToken', data.signIn.value);
+            login();
             navigate('/home');
         },
         onError: (error) => {
