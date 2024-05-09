@@ -83,8 +83,6 @@ const HomePage: React.FC = () => {
           <Typography gutterBottom>
             Track your diet, monitor your progress, and achieve your health goals.
           </Typography>
-          {/* <AutocompleteInput />
-          <AddFoodEntryForm /> */}
           <AddFoodEntry/>
         </Box>
 

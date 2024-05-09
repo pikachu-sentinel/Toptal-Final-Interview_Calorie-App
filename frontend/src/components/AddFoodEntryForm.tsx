@@ -73,6 +73,7 @@ const AddFoodEntryForm: React.FC<AddFoodEntryFormProps> = ({ onClose }) => {
             })
             // Reset fields or notify user upon success
         }
+        onClose();
     };
 
     // Error handling UI omitted for brevity

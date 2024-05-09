@@ -33,11 +33,11 @@ type FoodDetailVariables = {
   foodName: string;
 };
 
-interface AutocompleteInputProps{
+interface AutocompleteInputProps {
   onAddManually: () => void
 }
 
-const AutocompleteInput: React.FC<AutocompleteInputProps> = ({onAddManually}) => {
+const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ onAddManually }) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const { data, loading } = useQuery<AutocompleteFoodItemResponse, AutocompleteFoodItemVariables>(
@@ -66,7 +66,15 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({onAddManually}) =>
   };
 
   return (
-    <Box sx={{ width: '100%', maxWidth: 360, position: 'relative', bgcolor: 'background.paper' }}>
+    <Box sx={{
+      width: '100%',
+      maxWidth: 360,
+      position: 'relative',
+      bgcolor: 'background.paper',
+      '& .MuiTextField-root': {
+        mb: 1, // Margin bottom for the text field
+      },
+    }}>
       <TextField
         fullWidth
         label="Search food item"
@@ -88,13 +96,27 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({onAddManually}) =>
           ),
         }}
       />
-      <List sx={{ /* Used sx prop for absolute positioning of the list */
+      <List sx={{
         position: 'absolute',
         width: '100%',
-        maxHeight: 300,   /* Set max-height for the list and make overflow scrollable */
+        maxHeight: 300,
         overflow: 'auto',
-        zIndex: 1000,     /* Ensure the list is above other content */
+        zIndex: 1000,
         bgcolor: 'background.paper',
+        '& .MuiListItem-root': { // Apply styles for each ListItem
+          borderBottom: '1px solid', // To visually separate items
+          borderBottomColor: 'divider', // Use theme's divider color
+          '&:hover': {
+            bgcolor: 'action.hover', // Background color on hover based on theme
+          },
+          '& .MuiListItemText-primary': { // Styling the primary text inside the ListItemText
+            fontWeight: 'medium', // Make the font a bit heavier
+          },
+          '& .MuiAvatar-root': { // Styling for avatar
+            width: 28,
+            height: 28,
+          },
+        },
       }}>
         {suggestions?.map((item, index) => (
           <ListItem key={index} button onClick={() => {
