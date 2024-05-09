@@ -19,6 +19,9 @@ const Navbar: React.FC = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Calorie App
           </Typography>
+          <Button color="inherit" onClick={() => navigate('/home')}>
+                  Dashboard
+                </Button>
           {!isAuthenticated ? (
             <>
               <Button color="inherit" onClick={() => navigate('/login')}>
@@ -30,9 +33,9 @@ const Navbar: React.FC = () => {
             </>
           ) : (
             <>
-              {role === 'admin' && (
-                <Button color="inherit" onClick={() => navigate('/home')}>
-                  Dashboard
+              {role === 'user' && (
+                <Button color="inherit" onClick={() => navigate('/progress')}>
+                  Progress
                 </Button>
               )}
               {role === 'admin' && (

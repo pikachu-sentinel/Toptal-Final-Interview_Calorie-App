@@ -9,6 +9,7 @@ import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminReport from './pages/AdminReport';
+import ProgressPage from './pages/ProgressPage';
 
 const theme = createTheme({
   // Theme customization
@@ -31,6 +32,11 @@ const App: React.FC = () => {
             <Route path="/report" element={
               <ProtectedRoute>
                 <AdminReport />
+              </ProtectedRoute>
+            } />
+            <Route path="/progress" element={
+              <ProtectedRoute>
+                <ProgressPage/>
               </ProtectedRoute>
             } />
             <Route path="/" element={<Navigate replace to="/login" />} />
