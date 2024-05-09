@@ -38,6 +38,25 @@ const typeDefs = gql`
     date: String!
     totalCalories: Int!
   }
+
+  type InvitationResponse {
+    success: Boolean!
+    message: String!
+    token: String
+    password: String
+  }
+  
+  type RegisterResponse {
+    success: Boolean!
+    message: String!
+    user: User
+  }
+
+  input UserInput {
+    name: String!
+    email: String!
+    password: String!
+  }
   
   type Query {
     getFoodEntries: [FoodEntry]
@@ -53,6 +72,9 @@ const typeDefs = gql`
 
     signUp(username: String!, password: String!): Token
     signIn(username: String!, password: String!): Token
+
+    inviteFriend(name: String!, email: String!): InvitationResponse!
+    registerFriend(token: String!, userDetails: UserInput!): RegisterResponse!
   }
 `;
 
