@@ -42,6 +42,26 @@ const resolvers = {
                 throw new Error('Error fetching food detail');
             }
         },
+        getDailyCalorieSum: async (_, { userId }) => {
+            // Fetch all FoodEntry items for the given userId, typically from the database
+            const foodEntries = await FoodEntry.find({ user: userId });
+
+            // Calculate the calorie sum by grouping entries by date
+            const calorieMap = foodEntries.reduce((acc, entry) => {
+                const eatenAt = new Date(entry.eatenAt).toISOString().split('T')[0]; // Get the date part in YYYY-MM-DD format
+                if (!acc[eatenAt]) {
+                    acc[eatenAt] = 0;
+                }
+                acc[eatenAt] += entry.calories;
+                return acc;
+            }, {});
+
+            // Transform the calorieMap into an array of DailyCalorieSum objects
+            return Object.entries(calorieMap).map(([date, totalCalories]) => ({
+                date,
+                totalCalories,
+            }));
+        },
         autocompleteFoodItem: async (_, { searchTerm }) => {
             if (!searchTerm) throw new Error('Search term is required');
 
@@ -61,7 +81,7 @@ const resolvers = {
     Mutation: {
         addFoodEntry: async (_, { description, calories }, { user }) => {
             if (!user) throw new Error('Authentication required');
-            
+
             const newFoodEntry = new FoodEntry({ description, calories, user: user.user });
             await newFoodEntry.save();
             return newFoodEntry;

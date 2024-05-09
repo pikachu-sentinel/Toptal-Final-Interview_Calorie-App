@@ -20,7 +20,6 @@ interface GetDailyCalorieSumResponse {
 
 const ProgressPage: React.FC = () => {
     const { userid } = useAuth();
-    console.log(userid);
     const { loading, error, data } = useQuery<GetDailyCalorieSumResponse>(GET_DAILY_CALORIE_SUM, {
         variables: { userId: userid },
     });

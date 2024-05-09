@@ -54,8 +54,26 @@ const HomePage: React.FC = () => {
     );
   }
 
-  // Define a separate variable for grouped entries by date and meal type.
-  let entriesGroupedByDateAndMeal: { [date: string]: { [meal: string]: FoodEntry[] } } = {};
+  // Style for cards meeting the calorie limit
+  const cardStyle = {
+    mb: 2,
+    boxShadow: 2, // Apply some shadow for depth
+  };
+
+  // Style for headers with exceeded calorie limit
+  const exceededCalorieHeaderStyle = {
+    backgroundColor: '#d83b36', // A reddish background to indicate caution
+    color: 'white',
+    '& .MuiCardHeader-action': {
+      color: 'yellow', // Set a color for the warning icon
+    },
+  };
+
+  // Style for headers within the calorie limit
+  const normalCalorieHeaderStyle = {
+    backgroundColor: '#36d88e', // A greenish background to indicate good standing
+    color: 'white',
+  };
 
 
   // Group food entries by date and meal type
@@ -83,7 +101,7 @@ const HomePage: React.FC = () => {
           <Typography gutterBottom>
             Track your diet, monitor your progress, and achieve your health goals.
           </Typography>
-          <AddFoodEntry/>
+          <AddFoodEntry />
         </Box>
 
         {loading ? (
@@ -113,15 +131,19 @@ const HomePage: React.FC = () => {
             // Non-admin view or no food entries
             groupedEntries && Object.keys(groupedEntries).length > 0 ? (
               Object.keys(groupedEntries).sort().map((date) => (
-                <Card key={date} sx={{ mb: 2 }}>
+                <Card key={date} sx={cardStyle}>
                   {
                     groupedEntries[date].totalCalories > calorieLimit &&
                     <CardHeader
                       title={`Entries for ${date}`}
                       subheader={`Total calories: ${groupedEntries[date].totalCalories}`}
-                      sx={{ backgroundColor: '#d83b36', color: 'white' }}
+                      sx={
+                        groupedEntries[date].totalCalories > calorieLimit
+                          ? exceededCalorieHeaderStyle
+                          : normalCalorieHeaderStyle
+                      }
                       action={
-                        <WarningOutlined />
+                        groupedEntries[date].totalCalories > calorieLimit ? <WarningOutlined /> : null
                       }
                     />
                   }
