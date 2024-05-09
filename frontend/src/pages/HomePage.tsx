@@ -10,6 +10,7 @@ import { GET_FOOD_ENTRIES } from '../graphql/queries/getFoodEntries';
 import { FoodEntry } from '../types/graphql';
 import { useAuth } from '../context/AuthContext';
 import { WarningOutlined } from '@mui/icons-material';
+import AddFoodEntry from '../components/AddFoodEntry';
 
 const calorieLimit = 2100;
 
@@ -82,8 +83,9 @@ const HomePage: React.FC = () => {
           <Typography gutterBottom>
             Track your diet, monitor your progress, and achieve your health goals.
           </Typography>
-          <AutocompleteInput />
-          <AddFoodEntryForm />
+          {/* <AutocompleteInput />
+          <AddFoodEntryForm /> */}
+          <AddFoodEntry/>
         </Box>
 
         {loading ? (

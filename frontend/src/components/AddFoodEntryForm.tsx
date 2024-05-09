@@ -28,7 +28,12 @@ interface FoodEntriesData {
     getFoodEntries: FoodEntry[];
 }
 
-const AddFoodEntryForm: React.FC = () => {
+interface AddFoodEntryFormProps {
+    onClose: () => void; // A callback for when the form needs to close
+}
+
+// AddFoodEntryForm component
+const AddFoodEntryForm: React.FC<AddFoodEntryFormProps> = ({ onClose }) => {
     const [description, setDescription] = useState('');
     const [calories, setCalories] = useState('');
 
@@ -74,14 +79,14 @@ const AddFoodEntryForm: React.FC = () => {
 
     return (
         <Box
-        sx={{
-          '& .MuiTextField-root': { m: 1 }, // Apply margin to all TextField components
-        }}
-        component="form"
-        noValidate
-        autoComplete="off"
-      >
-            
+            sx={{
+                '& .MuiTextField-root': { m: 1 }, // Apply margin to all TextField components
+            }}
+            component="form"
+            noValidate
+            autoComplete="off"
+        >
+
             <TextField
                 label="Description"
                 value={description}
@@ -93,7 +98,7 @@ const AddFoodEntryForm: React.FC = () => {
                 value={calories}
                 onChange={(e) => setCalories(e.target.value)}
             />
-            <Button onClick={handleAddFoodEntry} disabled={loading} variant="contained" style={{margin: '8px', padding: '15px'}}>
+            <Button onClick={handleAddFoodEntry} disabled={loading} variant="contained" style={{ margin: '8px', padding: '15px' }}>
                 Add Food Entry
             </Button>
         </Box>
