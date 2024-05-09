@@ -31,9 +31,14 @@ const Navbar: React.FC = () => {
           ) : (
             <>
               {role === 'admin' && (
-                <Typography variant="subtitle1" component="div" sx={{ flexGrow: 1 }}>
-                  Admin Dashboard
-                </Typography>
+                <Button color="inherit" onClick={() => navigate('/home')}>
+                  Dashboard
+                </Button>
+              )}
+              {role === 'admin' && (
+                <Button color="inherit" onClick={() => navigate('/report')}>
+                  Report
+                </Button>
               )}
               <Button color="inherit" onClick={handleLogout}>
                 Logout

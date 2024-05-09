@@ -10,6 +10,7 @@ import { GET_FOOD_ENTRIES } from '../graphql/queries/getFoodEntries';
 import { FoodEntry } from '../types/graphql';
 import { useAuth } from '../context/AuthContext';
 
+
 interface FoodEntriesData {
   getFoodEntries: FoodEntry[];
 }
@@ -69,22 +70,19 @@ const HomePage: React.FC = () => {
     <>
       <Navbar />
       <Container maxWidth="md">
-        <Typography variant="h3" component="h1" gutterBottom>
-          Welcome to Calorie App
-        </Typography>
 
-        {isAuthenticated && role === 'admin' && (
-          <Typography gutterBottom variant="h5" component="div">
-            Admin Dashboard
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={3} my={2}>
+          {isAuthenticated && role === 'admin' && (
+            <Typography gutterBottom variant="h5" component="div">
+              Admin Dashboard
+            </Typography>
+          )}
+          <Typography gutterBottom>
+            Track your diet, monitor your progress, and achieve your health goals.
           </Typography>
-        )}
-
-        <Typography gutterBottom>
-          Track your diet, monitor your progress, and achieve your health goals.
-        </Typography>
-
-        <AutocompleteInput />
-        <AddFoodEntryForm />
+          <AutocompleteInput />
+          <AddFoodEntryForm />
+        </Box>
 
         {loading ? (
           <Typography>Loading food entries...</Typography>
