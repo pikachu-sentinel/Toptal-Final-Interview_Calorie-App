@@ -11,7 +11,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminReport from './pages/AdminReport';
 import ProgressPage from './pages/ProgressPage';
 import AdminManagementPage from './pages/ManageFoodEntries';
-
+import RegisterFriendPage from './pages/RegisgerFriend';
 
 const theme = createTheme({
   // Theme customization
@@ -26,6 +26,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/registerfriend" element={<RegisterFriendPage />} />
             <Route path="/home" element={
               <ProtectedRoute>
                 <HomePage />
