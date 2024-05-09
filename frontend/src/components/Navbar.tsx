@@ -20,8 +20,8 @@ const Navbar: React.FC = () => {
             Calorie App
           </Typography>
           <Button color="inherit" onClick={() => navigate('/home')}>
-                  Dashboard
-                </Button>
+            Dashboard
+          </Button>
           {!isAuthenticated ? (
             <>
               <Button color="inherit" onClick={() => navigate('/login')}>
@@ -36,6 +36,11 @@ const Navbar: React.FC = () => {
               {role === 'user' && (
                 <Button color="inherit" onClick={() => navigate('/progress')}>
                   Progress
+                </Button>
+              )}
+              {role === 'admin' && (
+                <Button color="inherit" onClick={() => navigate('/manage')}>
+                  Management
                 </Button>
               )}
               {role === 'admin' && (
