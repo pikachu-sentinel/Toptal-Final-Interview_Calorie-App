@@ -3,14 +3,6 @@
 ## Est. Time/Effort:
 20 hours
 
-## GitLab Repository
-Please use the private repository to version control your code:
-
-[GitLab Repository Link](https://git.toptal.com/screening-ops/Brian-hernandez-1)
-
-**Username**: Brian-hernandez  
-**Password**: auviXXXXXXX
-
 ## Task Description
 **Expected delivery time**: 7 days
 
