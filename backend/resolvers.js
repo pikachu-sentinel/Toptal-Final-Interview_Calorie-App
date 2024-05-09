@@ -17,10 +17,29 @@ const resolvers = {
     Query: {
         getFoodEntries: async (_, args, { user }) => {
             if (!user) throw new Error('Authentication required');
-            console.log(user);
             return user.role === 'admin'
                 ? await FoodEntry.find({}).populate('user')
                 : await FoodEntry.find({ user: user.user }).populate('user');
+        },
+        getDailyCalorieSum: async (_, { userId }, { user }) => {
+            if (!user) throw new Error('Authentication required');
+            const foodEntries = await FoodEntry.find({ user: userId });
+
+            // Calculate the calorie sum by grouping entries by date
+            const calorieMap = foodEntries.reduce((acc, entry) => {
+              const eatenAt = new Date(entry.eatenAt).toISOString().split('T')[0]; // Get the date part in YYYY-MM-DD format
+              if (!acc[eatenAt]) {
+                acc[eatenAt] = 0;
+              }
+              acc[eatenAt] += entry.calories;
+              return acc;
+            }, {});
+      
+            // Transform the calorieMap into an array of DailyCalorieSum objects
+            return Object.entries(calorieMap).map(([date, totalCalories]) => ({
+              date,
+              totalCalories,
+            }));
         },
         getFoodDetail: async (_, { foodName }) => {
             try {

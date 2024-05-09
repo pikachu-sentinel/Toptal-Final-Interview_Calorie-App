@@ -46,7 +46,7 @@ const AutocompleteInput: React.FC = () => {
 
   const handleSearchChange = useCallback(debounce((newSearchTerm: string) => {
     setSearchTerm(newSearchTerm);
-  }, 300), []);
+  }, 50), []);
 
   const suggestions = data?.autocompleteFoodItem;
 
