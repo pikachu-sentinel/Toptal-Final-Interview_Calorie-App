@@ -77,7 +77,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = ({ onAddManually }) 
     }}>
       <TextField
         fullWidth
-        label="Search food item"
+        label="Search food item & Add"
         variant="outlined"
         value={searchTerm}
         onChange={(event) => handleSearchChange(event.currentTarget.value)}
