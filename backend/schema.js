@@ -34,10 +34,16 @@ const typeDefs = gql`
     value: String!
   }
 
+  type DailyCalorieSum {
+    date: String!
+    totalCalories: Int!
+  }
+  
   type Query {
     getFoodEntries: [FoodEntry]
     getFoodDetail(foodName: String!): FoodDetail
     autocompleteFoodItem(searchTerm: String!): [FoodSuggestion]
+    getDailyCalorieSum(userId: ID!): [DailyCalorieSum]
   }
 
   type Mutation {

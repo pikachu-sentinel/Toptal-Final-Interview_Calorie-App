@@ -17,7 +17,6 @@ const resolvers = {
     Query: {
         getFoodEntries: async (_, args, { user }) => {
             if (!user) throw new Error('Authentication required');
-            console.log(user);
             return user.role === 'admin'
                 ? await FoodEntry.find({}).populate('user')
                 : await FoodEntry.find({ user: user.user }).populate('user');

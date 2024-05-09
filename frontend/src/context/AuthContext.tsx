@@ -11,6 +11,7 @@ interface DecodedToken {
 interface AuthContextType {
   isAuthenticated: boolean;
   role: string | null;
+  userid: string | null;
   login: () => void;
   logout: () => void;
 }
@@ -18,6 +19,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   role: null,
+  userid: null,
   login: () => {},
   logout: () => {},
 });
@@ -27,6 +29,7 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [role, setRole] = useState<string | null>(null);
+  const [userid, setUserid] = useState<string | null>(null);
 
   const login = () => {
     // This function would be called after you've set the auth token in localStorage
@@ -35,6 +38,7 @@ export const AuthProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
       try {
         const decoded = jwtDecode<DecodedToken>(token);
         setRole(decoded.role);
+        setUserid(decoded.user);
         setIsAuthenticated(true);
       } catch (error) {
         // Handling error if the token is invalid
@@ -55,7 +59,7 @@ export const AuthProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, role, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, role, userid, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

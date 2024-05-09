@@ -8,6 +8,10 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminReport from './pages/AdminReport';
+import ProgressPage from './pages/ProgressPage';
+import AdminManagementPage from './pages/ManageFoodEntries';
+
 
 const theme = createTheme({
   // Theme customization
@@ -25,6 +29,21 @@ const App: React.FC = () => {
             <Route path="/home" element={
               <ProtectedRoute>
                 <HomePage />
+              </ProtectedRoute>
+            } />
+            <Route path="/report" element={
+              <ProtectedRoute>
+                <AdminReport />
+              </ProtectedRoute>
+            } />
+            <Route path="/manage" element={
+              <ProtectedRoute>
+                <AdminManagementPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/progress" element={
+              <ProtectedRoute>
+                <ProgressPage />
               </ProtectedRoute>
             } />
             <Route path="/" element={<Navigate replace to="/login" />} />

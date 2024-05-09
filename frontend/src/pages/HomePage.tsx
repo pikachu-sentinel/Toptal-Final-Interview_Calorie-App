@@ -9,6 +9,10 @@ import AutocompleteInput from '../components/AutocompleteInput';
 import { GET_FOOD_ENTRIES } from '../graphql/queries/getFoodEntries';
 import { FoodEntry } from '../types/graphql';
 import { useAuth } from '../context/AuthContext';
+import { WarningOutlined } from '@mui/icons-material';
+import AddFoodEntry from '../components/AddFoodEntry';
+
+const calorieLimit = 2100;
 
 interface FoodEntriesData {
   getFoodEntries: FoodEntry[];
@@ -42,7 +46,7 @@ const HomePage: React.FC = () => {
 
   if (error) return <p>Error loading food entries...</p>;
 
-  let entriesByUser : GroupedEntriesByUsername = {};
+  let entriesByUser: GroupedEntriesByUsername = {};
   if (data && isAuthenticated && role === 'admin') {
     // Group by username for admin
     entriesByUser = groupBy(data.getFoodEntries, (entry) =>
@@ -53,7 +57,7 @@ const HomePage: React.FC = () => {
   // Define a separate variable for grouped entries by date and meal type.
   let entriesGroupedByDateAndMeal: { [date: string]: { [meal: string]: FoodEntry[] } } = {};
 
-  
+
   // Group food entries by date and meal type
   const groupedEntries = data?.getFoodEntries.reduce((acc: { [key: string]: { entries: FoodEntry[]; totalCalories: number } }, entry) => {
     const dateKey = new Date(parseInt(entry.eatenAt)).toDateString();
@@ -69,22 +73,20 @@ const HomePage: React.FC = () => {
     <>
       <Navbar />
       <Container maxWidth="md">
-        <Typography variant="h3" component="h1" gutterBottom>
-          Welcome to Calorie App
-        </Typography>
 
-        {isAuthenticated && role === 'admin' && (
-          <Typography gutterBottom variant="h5" component="div">
-            Admin Dashboard
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={3} my={2}>
+          {isAuthenticated && role === 'admin' && (
+            <Typography gutterBottom variant="h5" component="div">
+              Admin Dashboard
+            </Typography>
+          )}
+          <Typography gutterBottom>
+            Track your diet, monitor your progress, and achieve your health goals.
           </Typography>
-        )}
-
-        <Typography gutterBottom>
-          Track your diet, monitor your progress, and achieve your health goals.
-        </Typography>
-
-        <AutocompleteInput />
-        <AddFoodEntryForm />
+          {/* <AutocompleteInput />
+          <AddFoodEntryForm /> */}
+          <AddFoodEntry/>
+        </Box>
 
         {loading ? (
           <Typography>Loading food entries...</Typography>
@@ -114,28 +116,47 @@ const HomePage: React.FC = () => {
             groupedEntries && Object.keys(groupedEntries).length > 0 ? (
               Object.keys(groupedEntries).sort().map((date) => (
                 <Card key={date} sx={{ mb: 2 }}>
-                  <CardHeader
-                    title={`Entries for ${date}`}
-                    subheader={`Total calories: ${groupedEntries[date].totalCalories}`}
-                    sx={{ backgroundColor: '#f7f7f7' }}
-                  />
+                  {
+                    groupedEntries[date].totalCalories > calorieLimit &&
+                    <CardHeader
+                      title={`Entries for ${date}`}
+                      subheader={`Total calories: ${groupedEntries[date].totalCalories}`}
+                      sx={{ backgroundColor: '#d83b36', color: 'white' }}
+                      action={
+                        <WarningOutlined />
+                      }
+                    />
+                  }
+                  {
+                    groupedEntries[date].totalCalories < calorieLimit &&
+                    <CardHeader
+                      title={`Entries for ${date}`}
+                      subheader={`Total calories: ${groupedEntries[date].totalCalories}`}
+                      sx={{ backgroundColor: '#36d88e', color: 'white' }}
+                    />
+                  }
                   <CardContent>
-                    {groupedEntries[date].entries.map((entry) => (
-                      <React.Fragment key={entry.id}>
-                        <Typography variant="body1">
-                          {entry.description} - {getMealType(entry.eatenAt)}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                          Calories: {entry.calories} - {format(new Date(parseInt(entry.eatenAt)), 'p')}
-                        </Typography>
-                        {isAuthenticated && role === 'admin' && (
-                          <Typography variant="body2" color="textSecondary">
-                            User: {entry.user.username} {/* Display username */}
+                    {groupedEntries[date].entries.map((entry, index, entriesArray) => {
+                      const isLastEntry = index === entriesArray.length - 1; // Check if it's the last entry
+
+                      return (
+                        <React.Fragment key={entry.id}>
+                          <Typography variant="body1">
+                            {entry.description} - {getMealType(entry.eatenAt)}
                           </Typography>
-                        )}
-                        <Divider sx={{ my: 1.5 }} />
-                      </React.Fragment>
-                    ))}
+                          <Typography variant="body2" color="textSecondary">
+                            Calories: {entry.calories} - {format(new Date(parseInt(entry.eatenAt)), 'p')}
+                          </Typography>
+                          {isAuthenticated && role === 'admin' && (
+                            <Typography variant="body2" color="textSecondary">
+                              User: {entry.user.username}
+                            </Typography>
+                          )}
+                          {/* Render Divider for all but the last entry */}
+                          {!isLastEntry && <Divider sx={{ my: 1.5 }} />}
+                        </React.Fragment>
+                      );
+                    })}
                   </CardContent>
                 </Card>
               ))

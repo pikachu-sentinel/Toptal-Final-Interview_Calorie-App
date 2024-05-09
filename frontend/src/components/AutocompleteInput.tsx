@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import debounce from 'lodash.debounce';
 import { useQuery, useLazyQuery } from '@apollo/client';
-import { TextField, List, ListItem, ListItemText,  Box, ListItemAvatar, Avatar } from '@mui/material';
+import { TextField, List, ListItem, ListItemText, Box, ListItemAvatar, Avatar } from '@mui/material';
 import { AUTOCOMPLETE_FOOD_ITEM } from '../graphql/queries/autocompleteFoodItem';
 import { GET_FOOD_DETAIL } from '../graphql/queries/getFoodDetail';
 import FoodDetailModal from './FoodDetailModal'; // Ensure this component is implemented as shown previously
@@ -33,20 +33,24 @@ type FoodDetailVariables = {
   foodName: string;
 };
 
-const AutocompleteInput: React.FC = () => {
+interface AutocompleteInputProps{
+  onAddManually: () => void
+}
+
+const AutocompleteInput: React.FC<AutocompleteInputProps> = ({onAddManually}) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const { data, loading } = useQuery<AutocompleteFoodItemResponse, AutocompleteFoodItemVariables>(
     AUTOCOMPLETE_FOOD_ITEM, {
-      variables: { searchTerm },
-      skip: searchTerm.length < 3,
-    }
+    variables: { searchTerm },
+    skip: searchTerm.length < 3,
+  }
   );
   const [getFoodDetail, { loading: detailLoading, data: foodDetailData }] = useLazyQuery<FoodDetailResponse, FoodDetailVariables>(GET_FOOD_DETAIL);
 
   const handleSearchChange = useCallback(debounce((newSearchTerm: string) => {
     setSearchTerm(newSearchTerm);
-  }, 300), []);
+  }, 50), []);
 
   const suggestions = data?.autocompleteFoodItem;
 
@@ -67,7 +71,7 @@ const AutocompleteInput: React.FC = () => {
         fullWidth
         label="Search food item"
         variant="outlined"
-        value = {searchTerm}
+        value={searchTerm}
         onChange={(event) => handleSearchChange(event.currentTarget.value)}
         InputProps={{
           endAdornment: (
@@ -85,13 +89,13 @@ const AutocompleteInput: React.FC = () => {
         }}
       />
       <List sx={{ /* Used sx prop for absolute positioning of the list */
-          position: 'absolute',
-          width: '100%',
-          maxHeight: 300,   /* Set max-height for the list and make overflow scrollable */
-          overflow: 'auto',
-          zIndex: 1000,     /* Ensure the list is above other content */
-          bgcolor: 'background.paper',
-        }}>
+        position: 'absolute',
+        width: '100%',
+        maxHeight: 300,   /* Set max-height for the list and make overflow scrollable */
+        overflow: 'auto',
+        zIndex: 1000,     /* Ensure the list is above other content */
+        bgcolor: 'background.paper',
+      }}>
         {suggestions?.map((item, index) => (
           <ListItem key={index} button onClick={() => {
             handleListItemClick(item.name);
@@ -100,13 +104,11 @@ const AutocompleteInput: React.FC = () => {
             <ListItemAvatar><Avatar src={item.imageUrl} /></ListItemAvatar>
           </ListItem>
         ))}
-        {
-          suggestions?.length === 0 && searchTerm.length > 2 && (
-            <ListItem>
-              <ListItemText primary="No results found" />
-            </ListItem>
-          )
-        }
+        {suggestions?.length === 0 && searchTerm.length > 2 && (
+          <ListItem button onClick={onAddManually}>
+            <ListItemText primary="No results found. Add manually?" />
+          </ListItem>
+        )}
       </List>
       {/* Food Detail Modal */}
       <FoodDetailModal

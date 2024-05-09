@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { Box } from '@mui/material';
 import { ADD_FOOD_ENTRY } from '../graphql/mutations/addFoodEntry';
 import { GET_FOOD_ENTRIES } from '../graphql/queries/getFoodEntries';
 import { FoodEntry } from '../types/graphql';
-import AutocompleteInput from './AutocompleteInput';
 
 
 // Define the types for the mutation variables and response
@@ -28,7 +28,12 @@ interface FoodEntriesData {
     getFoodEntries: FoodEntry[];
 }
 
-const AddFoodEntryForm: React.FC = () => {
+interface AddFoodEntryFormProps {
+    onClose: () => void; // A callback for when the form needs to close
+}
+
+// AddFoodEntryForm component
+const AddFoodEntryForm: React.FC<AddFoodEntryFormProps> = ({ onClose }) => {
     const [description, setDescription] = useState('');
     const [calories, setCalories] = useState('');
 
@@ -73,8 +78,15 @@ const AddFoodEntryForm: React.FC = () => {
     // Error handling UI omitted for brevity
 
     return (
-        <div>
-            
+        <Box
+            sx={{
+                '& .MuiTextField-root': { m: 1 }, // Apply margin to all TextField components
+            }}
+            component="form"
+            noValidate
+            autoComplete="off"
+        >
+
             <TextField
                 label="Description"
                 value={description}
@@ -86,10 +98,10 @@ const AddFoodEntryForm: React.FC = () => {
                 value={calories}
                 onChange={(e) => setCalories(e.target.value)}
             />
-            <Button onClick={handleAddFoodEntry} disabled={loading}>
+            <Button onClick={handleAddFoodEntry} disabled={loading} variant="contained" style={{ margin: '8px', padding: '15px' }}>
                 Add Food Entry
             </Button>
-        </div>
+        </Box>
     );
 };
 
