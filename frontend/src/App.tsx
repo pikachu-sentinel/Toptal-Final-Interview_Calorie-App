@@ -13,6 +13,7 @@ import ProgressPage from './pages/ProgressPage';
 import AdminManagementPage from './pages/ManageFoodEntries';
 import RegisterFriendPage from './pages/RegisgerFriend';
 
+//React 18.0
 const theme = createTheme({
   // Theme customization with sample style
 });
