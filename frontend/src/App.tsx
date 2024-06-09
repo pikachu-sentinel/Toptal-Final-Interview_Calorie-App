@@ -14,7 +14,7 @@ import AdminManagementPage from './pages/ManageFoodEntries';
 import RegisterFriendPage from './pages/RegisgerFriend';
 
 const theme = createTheme({
-  // Theme customization
+  // Theme customization with sample style
 });
 
 const App: React.FC = () => {
