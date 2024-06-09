@@ -1,6 +1,6 @@
 # Simple Calorie App
 
-## Est. Time/Effort:
+## Time/Effort:
 20 hours
 
 ## Task Description
