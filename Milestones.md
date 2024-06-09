@@ -30,3 +30,4 @@
 - Record a detailed video tutorial showcasing the functionality enabled by the GraphQL backend and React/Material-UI frontend.
 - Finalize all code, conduct a thorough review, and apply finishing touches for a polished product.
 ## Milestone 7: Review with Top engineers with Presentaton
+- Send frend request test and review.
