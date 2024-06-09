@@ -4,7 +4,7 @@
 20 hours
 
 ## Task Description
-**Expected delivery time**: 7 days
+**Expected delivery time**: 6 days
 
 ### Overview
 This task involves creating a simple calorie-tracking app where users can enter food entries with the number of calories for each food.
