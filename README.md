@@ -28,7 +28,7 @@ This task involves creating a simple calorie-tracking app where users can enter 
 - Admins can manage all food entries and view reports including stats for entries added over the last 7 days and the average calories per user.
 
 #### User authentication/authorization:
-- Use token authentication with a predefined user-specific token.
+- Use token authentication with a predefined user-specific token. 
 
 #### Autocomplete feature:
 - Implement using the Nutritionix API for product title and calorie value.
